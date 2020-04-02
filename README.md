@@ -14,11 +14,11 @@ Attention: data named decode_this.txt for testing should be stroed in t2t_data f
 
 # Generate data
 
-The input data can be preprocessed by runing the datagen.sh script, and the output data was stroed in t2t_data folder.
+The input data can be preprocessed by runing the datagen.sh script, and the output data is stroed in t2t_data folder.
 
 # Train
 
-Model training can be started by running the train.sh script.
+Model training can be started by running the train.sh script.TensorBoard can be used for visualization.
 
 # Decode
 
