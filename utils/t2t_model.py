@@ -465,7 +465,12 @@ class T2TModel(base.Layer):
       return (tf.constant(0., dtype=tf.float32),
               tf.constant(1., dtype=tf.float32))
 
+    print("loss2 here.111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111000000000000")
+    print(logits.shape)
+    print(feature.shape)
+
     loss_num, loss_den = target_modality.loss(logits, feature)
+
     loss_num *= self._problem_hparams.loss_multiplier
 
     if hasattr(self.hparams, "problem") and hasattr(
@@ -485,6 +490,7 @@ class T2TModel(base.Layer):
 
   def loss(self, logits, features):
     if isinstance(logits, dict):
+
       if self._problem_hparams:
         target_modality = self._problem_hparams.target_modality
       else:
@@ -505,6 +511,7 @@ class T2TModel(base.Layer):
 
       return tf.add_n([n / d for n, d in losses.values()])
     else:
+
       if self._problem_hparams:
         target_modality = self._problem_hparams.target_modality
       else:
@@ -1280,9 +1287,15 @@ class T2TModel(base.Layer):
 
     # TRAIN and EVAL modes
     if hparams.eval_run_autoregressive and mode == tf.estimator.ModeKeys.EVAL:
+      print("4444444444444444444444444444444444444444444400000000000000000000000000000000000000000000")
       logits, losses_dict = model.eval_autoregressive(features)
     else:
+      print("555555555555555555555555555555555555555555511111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000")
       logits, losses_dict = model(features)  # pylint: disable=not-callable
+      print(logits.shape)
+      print(losses_dict.keys)
+      print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+
 
     # Set known shapes
     if common_layers.is_xla_compiled():
@@ -1315,10 +1328,18 @@ class T2TModel(base.Layer):
     model._summarize_losses(losses_dict)  # pylint: disable=protected-access
 
     # Accumulate losses
+    print("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
+    print(key for key in sorted(losses_dict.keys()))
+    print("ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc")
+    print(losses_dict[key] for key in sorted(losses_dict.keys()))
+
+
     loss = sum(losses_dict[key] for key in sorted(losses_dict.keys()))
 
     # EVAL mode
     if mode == tf.estimator.ModeKeys.EVAL:
+
+      print("22222222222222222222222222222222222222222222222222222222222222222222222200000000000000000000000000000000000000000000000")
       return model.estimator_spec_eval(features, logits, labels, loss,
                                        losses_dict)
 
@@ -1326,6 +1347,8 @@ class T2TModel(base.Layer):
     assert mode == tf.estimator.ModeKeys.TRAIN
     num_async_replicas = (1 if (use_tpu or not config) else
                           config.t2t_device_info["num_async_replicas"])
+
+    print("33333333333333333333333333333333333333333333333333330000000000000000000000000000000000000000000000000000000000000000000")
     return model.estimator_spec_train(
         loss, num_async_replicas=num_async_replicas, use_tpu=use_tpu)
 

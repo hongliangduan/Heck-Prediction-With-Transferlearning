@@ -47,7 +47,7 @@ def decode_hparams(overrides=""):
       extra_length=100,
       batch_size=0,
 
-      beam_size=4,
+      beam_size=15,
 
 
       alpha=0.6,
@@ -288,8 +288,6 @@ def decode_once(estimator,
         tf.logging.info("BEAM %d:" % i)
         score = scores and scores[i]
 
-        # print("it's here.........................................................")
-
         decoded = log_decode_results(
             inputs,
             beam,
@@ -306,7 +304,6 @@ def decode_once(estimator,
         if decode_hp.write_beam_scores:
           decoded_scores.append(score)
     else:
-      # print("it's here.........................................................")
       decoded = log_decode_results(
           inputs,
           outputs,
@@ -341,6 +338,12 @@ def decode_once(estimator,
     input_file.close()
 
 
+def softmax(x):
+      x_exp = np.exp(x)
+      x_sum = np.sum(x_exp, keepdims=True)
+      s = x_exp / x_sum
+      return s
+
 def decode_from_file(estimator,
                      filename,
                      hparams,
@@ -348,6 +351,8 @@ def decode_from_file(estimator,
                      decode_to_file=None,
                      checkpoint_path=None):
   """Compute predictions on entries in filename and write them out."""
+
+
   if not decode_hp.batch_size:
     decode_hp.batch_size = 32
     tf.logging.info(
@@ -371,8 +376,7 @@ def decode_from_file(estimator,
                                        inputs_vocab, decode_hp.batch_size,
                                        decode_hp.max_input_size)
 
-    print(
-        "==============================================================================........................................................")
+    print("==============================================================================........................................................")
     print(len(sorted_inputs))
     print(sorted_inputs[1])
     print(sorted_keys[1])
@@ -407,21 +411,49 @@ def decode_from_file(estimator,
       except StopIteration:
         break
 
-
+  probabilities = []
   for elapsed_time, result in timer(result_iter):
-    if decode_hp.return_beams:
 
+    if decode_hp.return_beams:
       beam_decodes = []
       beam_scores = []
       output_beams = np.split(result["outputs"], decode_hp.beam_size, axis=0)
+
+      print(np.array(output_beams).shape)
+
+
       scores = None
       if "scores" in result:
         scores = np.split(result["scores"], decode_hp.beam_size, axis=0)
+
+      score_new = np.array(scores)
+      print(score_new.shape)
+      print(scores)
+
+      # score_new.reshape(np.array(scores)[1].shape, )
+      score_new.reshape(decode_hp.beam_size, )
+
+
+
+      # probs = softmax(score_new.reshape(np.array(scores)[1].shape,))
+      probs = softmax(score_new.reshape(decode_hp.beam_size,))
+
+
+      # probabilities.append(probs[0])
+      probabilities.append(scores[0][0])
+
+
+
       for k, beam in enumerate(output_beams):
         tf.logging.info("BEAM %d:" % k)
-        score = scores and scores[k]
 
-        # print("it's here.........................................................")
+        # print("This is scores：-------------------------------------------------------------------------------------------------------------------- ")
+        # print(scores)
+        #
+        # print("This is scores[k]： ---------------------------------------------------------------------------------------------------------------------")
+        # print(scores[k])
+
+        score = scores and scores[k]
 
 
         _, decoded_outputs, _ = log_decode_results(
@@ -445,8 +477,6 @@ def decode_from_file(estimator,
     else:
 
       print("it's here result..................................................................................................................................")
-
-      # print(result)
 
 
       print(result["outputs"])    #[0] or [1]
@@ -472,6 +502,19 @@ def decode_from_file(estimator,
       decodes.append(decoded_outputs)
     total_time_per_step += elapsed_time
     total_cnt += result["outputs"].shape[-1]
+
+  print("probs are: =================================================================================================================================================================================================================================")
+  print(probabilities)
+
+
+  def write_prob():
+      fp = open('probabilities_file', 'w')
+      for line in probabilities:
+          fp.write(str(line) + '\n')
+      fp.close()
+
+  write_prob()
+
   tf.logging.info("Elapsed Time: %5.5f" % (time.time() - start_time))
   tf.logging.info("Averaged Single Token Generation Time: %5.7f" %
                   (total_time_per_step / total_cnt))
@@ -506,6 +549,8 @@ def decode_from_file(estimator,
       decode_hparams=decode_hp,
       predictions=list(result_iter)
   ), None)
+
+
 
 
 def _decode_filename(base_filename, problem_name, decode_hp):
@@ -596,11 +641,6 @@ def _decode_batch_input_fn(num_decode_batches, sorted_inputs, vocabulary,
     batch_inputs = []
     for inputs in sorted_inputs[b * batch_size:(b + 1) * batch_size]:
       input_ids = vocabulary.encode(inputs)
-
-      print("111111111111111111111111111111111111111111111111111111111111111")
-      print(input_ids)
-
-
       if max_input_size > 0:
         # Subtract 1 for the EOS_ID.
         input_ids = input_ids[:max_input_size - 1]

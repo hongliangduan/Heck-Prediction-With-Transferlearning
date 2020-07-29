@@ -175,6 +175,9 @@ def main(_):
     write_file = tf.gfile.Open(os.path.expanduser(FLAGS.decode_to_file), "w")
     for score in results:
       write_file.write("%.6f\n" % score)
+
+      print("==================================================================================================================================")
+
       print(score)
     write_file.close()
     return

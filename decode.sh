@@ -9,7 +9,7 @@ TRAIN_DIR=./t2t_train/$PROBLEM/$MODEL-$HPARAMS
 
 DECODE_FILE=$DATA_DIR/decode_this.txt
 
-BEAM_SIZE=2
+BEAM_SIZE=10
 ALPHA=0.6
 
 mkdir -p $DATA_DIR $TMP_DIR $TRAIN_DIR
@@ -22,5 +22,5 @@ t2t-decoder \
   --output_dir=$TRAIN_DIR \
   --decode_hparams="beam_size=$BEAM_SIZE,alpha=$ALPHA" \
   --decode_from_file=$DECODE_FILE \
-  --decode_to_file=rengong_map_top1_qianyi.chem \
+  --decode_to_file=20200728zysharplesstop_1.chem \
   --hparams='batch_size=6144, hidden_size=256, layer_prepostprocess_dropout=0.3'

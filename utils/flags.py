@@ -85,9 +85,14 @@ flags.DEFINE_bool("log_device_placement", False,
 flags.DEFINE_string("warm_start_from", None, "Warm start from checkpoint.")
 
 # Distributed training flags
-flags.DEFINE_integer("local_eval_frequency", 1000,
+# flags.DEFINE_integer("local_eval_frequency", 1000,
+#                      "Save checkpoints and run evaluation every N steps during "
+#                      "local training.")
+
+flags.DEFINE_integer("local_eval_frequency", 100,
                      "Save checkpoints and run evaluation every N steps during "
                      "local training.")
+
 flags.DEFINE_integer("eval_throttle_seconds", 600,
                      "Do not re-evaluate unless the last evaluation was started"
                      " at least this many seconds ago.")

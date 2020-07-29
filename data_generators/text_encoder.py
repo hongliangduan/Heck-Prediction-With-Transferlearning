@@ -712,9 +712,9 @@ class SubwordTextEncoder(TextEncoder):
 
     def bisect(min_val, max_val):
       """Bisection to find the right size."""
-      # present_count = (max_val + min_val) // 2
-      # present_count = 2500
-      present_count = 10000
+      present_count = (max_val + min_val) // 2
+      # present_count = 5000
+      # present_count = 10000
       # present_count = 80
 
 
