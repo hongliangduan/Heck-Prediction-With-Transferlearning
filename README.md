@@ -4,7 +4,7 @@ Code for 'Transformer:Linking the Atom Mapping and Neural Machine Translation' p
 ## Tensorflow 1.11
 # Dataset
 The USPTO-transfer learning-360K is for pretraining.
-THe USPTO-AM-50k is for atom mapping task
+THe USPTO-AM-50k is for atom mapping task.
 The original input data for training and validation was in the tmp folder.
 # Generate data
 THe input data can preprocessed by running the datagen.sh script, and the output data was in t2t_data folder.
