@@ -1,5 +1,5 @@
 # Transformer-Atom-Mapping
-Code for 'Transformer:Linking the Atom Mapping and Neural Machine Tranlstion' paper
+Code for 'Transformer:Linking the Atom Mapping and Neural Machine Translation' paper
 All requirements for http://github.com/tensorflow/tensor2tensor
 ## python 2.7
 ## Tensorflow 1.11
