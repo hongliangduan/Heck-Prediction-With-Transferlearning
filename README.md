@@ -1,6 +1,5 @@
 # Transformer-Atom-Mapping
-Code for 'Transformer:Linking the Atom Mapping and Neural Machine Translation' paper
-All requirements for http://github.com/tensorflow/tensor2tensor
+Code for 'Transformer:Linking the Atom Mapping and Neural Machine Translation' paper. All requirements for http://github.com/tensorflow/tensor2tensor
 ## python 2.7
 ## Tensorflow 1.11
 # Dataset
@@ -12,4 +11,4 @@ THe input data can preprocessed by running the datagen.sh script, and the output
 # Train
 Model training can be started by running the train.sh script.
 # Test
-Model testing can be started by running the decode.shscript.
+Model testing can be started by running the decode.sh script.
